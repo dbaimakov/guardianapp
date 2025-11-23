@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Guardian Search</string>
+    <string name="search_hint">Enter search term</string>
+    <string name="search_button">Search</string>
+    <string name="toast_empty_search">Please enter a search term</string>
+    <string name="error_loading">Error loading articles</string>
+    <string name="open_in_browser">Open in browser</string>
+    <string name="save_to_favourites">Save to favourites</string>
+</resources>
