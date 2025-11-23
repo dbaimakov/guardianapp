@@ -1,10 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- App name -->
     <string name="app_name">Guardian Search</string>
+
+    <!-- Search screen -->
     <string name="search_hint">Enter search term</string>
     <string name="search_button">Search</string>
     <string name="toast_empty_search">Please enter a search term</string>
     <string name="error_loading">Error loading articles</string>
     <string name="open_in_browser">Open in browser</string>
     <string name="save_to_favourites">Save to favourites</string>
+    <string name="toast_saved_favourite">Saved to favourites</string>
+    <string name="toast_save_error">Could not save favourite</string>
+    <string name="snackbar_deleted">Favourite deleted</string>
+    <string name="snackbar_undo">UNDO</string>
+    <string name="section_format">Section: %1$s</string>
+
+    <!-- Navigation drawer -->
+    <string name="nav_search">Search</string>
+    <string name="nav_favourites">Favourites</string>
+    <string name="nav_about">About</string>
+    <string name="drawer_open">Open navigation</string>
+    <string name="drawer_close">Close navigation</string>
+
+    <!-- Titles with version -->
+    <string name="title_search_with_version">Search (%1$s)</string>
+    <string name="title_favourites_with_version">Favourites (%1$s)</string>
+    <string name="title_about_with_version">About (%1$s)</string>
+
+    <!-- Version -->
+    <string name="version_format">Version %1$s</string>
+    <string name="version_placeholder">Version</string>
+
+    <!-- Help menu / dialogs -->
+    <string name="help_menu">Help</string>
+    <string name="help_title">Help</string>
+
+    <string name="help_message_search">
+        Enter a keyword and press Search to load Guardian articles. Tap an item to see details.
+    </string>
+
+    <string name="help_message_favourites">
+        This screen shows articles you have saved as favourites. Tap one to open it. Long press to delete.
+    </string>
+
+    <string name="help_message_detail">
+        This screen shows details for the selected article. Use the buttons to open it in the browser or save it.
+    </string>
+
+    <string name="help_message_about">
+        This screen shows information about the app.
+    </string>
+
+    <!-- About text -->
+    <string name="about_text">
+        Guardian Search is a student project that uses The Guardian API to search and save news articles.
+    </string>
+
 </resources>

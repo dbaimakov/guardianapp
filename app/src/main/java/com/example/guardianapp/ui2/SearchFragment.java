@@ -31,6 +31,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 
 
 public class SearchFragment extends Fragment {

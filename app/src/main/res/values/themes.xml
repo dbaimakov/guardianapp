@@ -2,4 +2,6 @@
 <resources>
 
     <style name="Theme.Guardianapp" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Guardianapp.AppCompat" parent="Theme.AppCompat.DayNight.NoActionBar" />
+
 </resources>
