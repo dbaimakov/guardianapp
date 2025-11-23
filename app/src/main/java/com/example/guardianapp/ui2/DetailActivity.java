@@ -12,13 +12,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.guardianapp.R;
 import com.example.guardianapp.data.GuardianRepository;
 import com.example.guardianapp.model.Article;
-import com.example.guardianapp.data.GuardianDao;
-
-
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -26,6 +24,7 @@ public class DetailActivity extends AppCompatActivity {
     private static final String EXTRA_URL = "extra_url";
     private static final String EXTRA_SECTION = "extra_section";
     private static final String EXTRA_DATE = "extra_date";
+
 
     public static void start(Context context, Article article) {
         Intent intent = new Intent(context, DetailActivity.class);
@@ -46,6 +45,15 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         repository = new GuardianRepository(this);
 
@@ -77,9 +85,13 @@ public class DetailActivity extends AppCompatActivity {
             Article a = new Article(title, url, section, date);
             long id = repository.addFavourite(a);
             if (id != -1) {
-                Toast.makeText(this, R.string.toast_saved_favourite, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        R.string.toast_saved_favourite,
+                        Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, R.string.toast_save_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        R.string.toast_save_error,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -93,7 +105,13 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_help) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            // Toolbar/back arrow
+            onBackPressed();
+            return true;
+        } else if (id == R.id.action_help) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.help_title)
                     .setMessage(R.string.help_message_detail)
@@ -101,6 +119,7 @@ public class DetailActivity extends AppCompatActivity {
                     .show();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

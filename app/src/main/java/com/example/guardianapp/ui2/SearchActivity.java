@@ -16,9 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.guardianapp.AppBuildConfig;
 import com.example.guardianapp.R;
 import com.google.android.material.navigation.NavigationView;
-
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -37,23 +37,31 @@ public class SearchActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        String version = getString(R.string.version_placeholder);
-        String title = getString(R.string.title_search_with_version, version);
-        getSupportActionBar().setTitle(title);
+        // Title with version
+        String title = getString(
+                R.string.title_search_with_version,
+                AppBuildConfig.VERSION_NAME
+        );
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,
                 drawerLayout,
                 toolbar,
                 R.string.drawer_open,
-                R.string.drawer_close);
+                R.string.drawer_close
+        );
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        // Set version text in drawer header
+        // Version text in drawer header
         View headerView = navigationView.getHeaderView(0);
         TextView textVersion = headerView.findViewById(R.id.textVersion);
-        textVersion.setText(getString(R.string.version_format, version));
+        textVersion.setText(
+                getString(R.string.version_format, AppBuildConfig.VERSION_NAME)
+        );
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -69,6 +77,7 @@ public class SearchActivity extends AppCompatActivity {
             return true;
         });
 
+        // Load the search fragment the first time
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -98,9 +107,11 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Drawer toggle icon
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+
         if (item.getItemId() == R.id.action_help) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.help_title)
@@ -109,6 +120,7 @@ public class SearchActivity extends AppCompatActivity {
                     .show();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

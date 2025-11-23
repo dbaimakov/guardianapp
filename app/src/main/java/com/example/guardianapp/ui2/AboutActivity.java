@@ -1,15 +1,15 @@
 package com.example.guardianapp.ui2;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.guardianapp.AppBuildConfig;
 import com.example.guardianapp.R;
 
 public class AboutActivity extends AppCompatActivity {
@@ -19,20 +19,13 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        // Get version name without using BuildConfig
-        String versionName;
-        try {
-            PackageInfo pInfo = getPackageManager()
-                    .getPackageInfo(getPackageName(), 0);
-            versionName = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            // Fallback text if something goes wrong
-            versionName = getString(R.string.version_placeholder);
-        }
+        // Title: "About (vX.Y.Z)"
+        setTitle(getString(R.string.title_about_with_version, AppBuildConfig.VERSION_NAME));
 
-        // title_about_with_version should be something like: "About (v%1$s)"
-        setTitle(getString(R.string.title_about_with_version,
-                getString(R.string.version_placeholder)));
+        // Show back arrow in the action bar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -42,8 +35,14 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_help) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            // Back arrow
+            finish();
+            return true;
+        } else if (id == R.id.action_help) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.help_title)
                     .setMessage(R.string.help_message_about)
@@ -51,6 +50,7 @@ public class AboutActivity extends AppCompatActivity {
                     .show();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
