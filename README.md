@@ -1,1 +1,1 @@
-BC News reader
+BBC News reader
