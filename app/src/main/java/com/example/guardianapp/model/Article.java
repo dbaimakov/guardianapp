@@ -29,6 +29,7 @@ public class Article {
 
     @Override
     public String toString() {
+        // This is what ListView will show by default
         return title;
     }
 }

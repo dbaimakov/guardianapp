@@ -59,7 +59,6 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         buttonSaveFavourite.setOnClickListener(v -> {
-            // TODO: implement save to DB
             Toast.makeText(this, "Saved (TODO implement DB)", Toast.LENGTH_SHORT).show();
         });
     }

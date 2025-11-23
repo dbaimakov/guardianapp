@@ -6,7 +6,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -26,6 +32,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class SearchFragment extends Fragment {
 
     private static final String API_KEY = "157d021a-30c4-4c6c-beff-7aa06ffde2fb";
@@ -37,7 +44,7 @@ public class SearchFragment extends Fragment {
     private ListView listViewResults;
 
     private ArrayAdapter<Article> adapter;
-    private List<Article> articles = new ArrayList<>();
+    private final List<Article> articles = new ArrayList<>();
 
     @Nullable
     @Override
@@ -52,9 +59,11 @@ public class SearchFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         listViewResults = view.findViewById(R.id.listViewResults);
 
-        adapter = new ArrayAdapter<>(requireContext(),
+        adapter = new ArrayAdapter<>(
+                inflater.getContext(),                 // safe context
                 android.R.layout.simple_list_item_1,
-                articles);
+                articles
+        );
         listViewResults.setAdapter(adapter);
 
         buttonSearch.setOnClickListener(v -> onSearchClicked());
@@ -66,6 +75,7 @@ public class SearchFragment extends Fragment {
 
         return view;
     }
+
     private void onSearchClicked() {
         String query = editTextSearch.getText().toString().trim();
         if (TextUtils.isEmpty(query)) {
@@ -87,6 +97,7 @@ public class SearchFragment extends Fragment {
 
         new GuardianSearchTask().execute(urlString);
     }
+
     private class GuardianSearchTask extends AsyncTask<String, Void, List<Article>> {
 
         @Override
@@ -135,7 +146,6 @@ public class SearchFragment extends Fragment {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                // On error, return empty list
             } finally {
                 try {
                     if (reader != null) reader.close();
@@ -149,6 +159,8 @@ public class SearchFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Article> result) {
             progressBar.setVisibility(View.GONE);
+            if (!isAdded()) return;  // fragment detached, avoid crash
+
             articles.clear();
             if (result != null && !result.isEmpty()) {
                 articles.addAll(result);
