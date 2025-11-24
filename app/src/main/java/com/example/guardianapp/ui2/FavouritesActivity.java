@@ -1,9 +1,9 @@
 package com.example.guardianapp.ui2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.guardianapp.AppBuildConfig;
 import com.example.guardianapp.R;
 import com.example.guardianapp.data.GuardianDao;
 import com.example.guardianapp.model.Article;
@@ -18,7 +19,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class FavouritesActivity extends AppCompatActivity {
 
@@ -35,17 +35,18 @@ public class FavouritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourites);
 
-        // Toolbar back button
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbarFavourites);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            String title = getString(R.string.title_favourites_with_version, AppBuildConfig.VERSION_NAME);
+            getSupportActionBar().setTitle(title);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         guardianDao = new GuardianDao(this);
         listView = findViewById(R.id.listViewFavourites);
 
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                favourites);
+        adapter = new ArrayAdapter<>(this, R.layout.list_item_article, R.id.textTitle, favourites);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -53,7 +54,6 @@ public class FavouritesActivity extends AppCompatActivity {
             DetailActivity.start(FavouritesActivity.this, article);
         });
 
-        // Long press to delete with Snackbar
         listView.setOnItemLongClickListener((parent, view, position, id) -> {
             lastDeleted = favourites.get(position);
             lastDeletedPosition = position;
@@ -83,7 +83,6 @@ public class FavouritesActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    // toolbar back arrow + help menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_help, menu);
@@ -92,10 +91,16 @@ public class FavouritesActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish(); // back/home
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
             return true;
-        } else if (item.getItemId() == R.id.action_help) {
+        } else if (id == R.id.action_home) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_help) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.help_title)
                     .setMessage(R.string.help_message_favourites)

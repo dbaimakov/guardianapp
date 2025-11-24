@@ -1,5 +1,7 @@
 package com.example.guardianapp.ui2;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -31,15 +33,13 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import android.content.Context;
-import android.content.SharedPreferences;
-
-
 
 public class SearchFragment extends Fragment {
 
     private static final String API_KEY = "157d021a-30c4-4c6c-beff-7aa06ffde2fb";
     private static final String BASE_URL = "https://content.guardianapis.com/search?api-key=";
+    private static final String PREFS_NAME = "guardian_prefs";
+    private static final String KEY_LAST_QUERY = "last_query";
 
     private EditText editTextSearch;
     private Button buttonSearch;
@@ -54,7 +54,6 @@ public class SearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         editTextSearch = view.findViewById(R.id.editTextSearch);
@@ -62,11 +61,11 @@ public class SearchFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         listViewResults = view.findViewById(R.id.listViewResults);
 
-        adapter = new ArrayAdapter<>(
-                inflater.getContext(),                 // safe context
-                android.R.layout.simple_list_item_1,
-                articles
-        );
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String lastQuery = prefs.getString(KEY_LAST_QUERY, "");
+        editTextSearch.setText(lastQuery);
+
+        adapter = new ArrayAdapter<>(inflater.getContext(), R.layout.list_item_article, R.id.textTitle, articles);
         listViewResults.setAdapter(adapter);
 
         buttonSearch.setOnClickListener(v -> onSearchClicked());
@@ -82,11 +81,12 @@ public class SearchFragment extends Fragment {
     private void onSearchClicked() {
         String query = editTextSearch.getText().toString().trim();
         if (TextUtils.isEmpty(query)) {
-            Toast.makeText(requireContext(),
-                    R.string.toast_empty_search,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.toast_empty_search, Toast.LENGTH_SHORT).show();
             return;
         }
+
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(KEY_LAST_QUERY, query).apply();
 
         String urlString;
         try {
@@ -137,23 +137,25 @@ public class SearchFragment extends Fragment {
 
                 for (int i = 0; i < results.length(); i++) {
                     JSONObject obj = results.getJSONObject(i);
-
                     String title = obj.getString("webTitle");
                     String urlArticle = obj.getString("webUrl");
                     String section = obj.optString("sectionName", "Unknown");
                     String pubDate = obj.optString("webPublicationDate", "");
-
                     Article article = new Article(title, urlArticle, section, pubDate);
                     result.add(article);
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 try {
-                    if (reader != null) reader.close();
-                } catch (Exception ignored) {}
-                if (connection != null) connection.disconnect();
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (Exception ignored) {
+                }
+                if (connection != null) {
+                    connection.disconnect();
+                }
             }
 
             return result;
@@ -162,17 +164,16 @@ public class SearchFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Article> result) {
             progressBar.setVisibility(View.GONE);
-            if (!isAdded()) return;  // fragment detached, avoid crash
-
+            if (!isAdded()) {
+                return;
+            }
             articles.clear();
             if (result != null && !result.isEmpty()) {
                 articles.addAll(result);
                 adapter.notifyDataSetChanged();
             } else {
                 adapter.notifyDataSetChanged();
-                Toast.makeText(requireContext(),
-                        R.string.error_loading,
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), R.string.error_loading, Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/bg_main">
 
-    <TextView
-        android:id="@+id/textAbout"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarAbout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/about_text" />
-</ScrollView>
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/textAbout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_text" />
+    </ScrollView>
+
+</LinearLayout>

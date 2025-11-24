@@ -37,11 +37,7 @@ public class SearchActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        // Title with version
-        String title = getString(
-                R.string.title_search_with_version,
-                AppBuildConfig.VERSION_NAME
-        );
+        String title = getString(R.string.title_search_with_version, AppBuildConfig.VERSION_NAME);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
@@ -56,12 +52,9 @@ public class SearchActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
-        // Version text in drawer header
         View headerView = navigationView.getHeaderView(0);
         TextView textVersion = headerView.findViewById(R.id.textVersion);
-        textVersion.setText(
-                getString(R.string.version_format, AppBuildConfig.VERSION_NAME)
-        );
+        textVersion.setText(getString(R.string.version_format, AppBuildConfig.VERSION_NAME));
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -77,7 +70,6 @@ public class SearchActivity extends AppCompatActivity {
             return true;
         });
 
-        // Load the search fragment the first time
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -98,7 +90,6 @@ public class SearchActivity extends AppCompatActivity {
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
-    // Help menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_help, menu);
@@ -107,12 +98,16 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // Drawer toggle icon
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
-        if (item.getItemId() == R.id.action_help) {
+        int id = item.getItemId();
+        if (id == R.id.action_home) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_help) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.help_title)
                     .setMessage(R.string.help_message_search)
@@ -120,7 +115,6 @@ public class SearchActivity extends AppCompatActivity {
                     .show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
